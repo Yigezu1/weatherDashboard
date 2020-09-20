@@ -59,7 +59,7 @@ function updateListOfCitiesUi() {
   if (citiesLocal) {
     var citiesProp = citiesLocal.cities;
     for (var i = 0; i < citiesProp.length; i++) {
-      var pEl = $("<p class='cities border mt-0 mb-0'>").text(citiesProp[i]);
+      var pEl = $("<p class='cities border mt-0 mb-0 p-2'>").text(citiesProp[i]);
       $("#listOfCitiesSearched").append(pEl);
     }
   }
