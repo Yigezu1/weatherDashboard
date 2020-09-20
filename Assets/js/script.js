@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  getCityFromLocalStorage();
+  updateListOfCitiesUi();
 });
 
 function getSetCityFromLocalStorage(city) {
@@ -56,10 +56,12 @@ $("#search").on("click", function () {
 
 function updateListOfCitiesUi() {
   var citiesLocal = JSON.parse(localStorage.getItem("citiesserched"));
-  var citiesProp = citiesLocal.cities;
-  for (var i = 0; i < citiesProp.length; i++) {
-    var pEl = $("<p class='cities border'>").text(citiesProp[i]);
-    $("#listOfCitiesSearched").append(pEl);
+  if (citiesLocal) {
+    var citiesProp = citiesLocal.cities;
+    for (var i = 0; i < citiesProp.length; i++) {
+      var pEl = $("<p class='cities border mt-0 mb-0'>").text(citiesProp[i]);
+      $("#listOfCitiesSearched").append(pEl);
+    }
   }
 }
 
