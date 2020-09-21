@@ -1,5 +1,6 @@
 $(document).ready(function () {
   updateListOfCitiesUi();
+  initWeather();
 });
 
 function getSetCityFromLocalStorage(city) {
@@ -7,6 +8,7 @@ function getSetCityFromLocalStorage(city) {
   if (!citiesLocal) {
     var citiesA = [];
     if (city) {
+      city = city.toUpperCase();
       citiesA.push(city);
       var a = {};
       a.cities = citiesA;
@@ -15,7 +17,8 @@ function getSetCityFromLocalStorage(city) {
     }
   } else {
     if (city) {
-      if ((citiesLocal.cities.indexOf(city))===-1) {
+      city = city.toUpperCase();
+      if (citiesLocal.cities.indexOf(city) === -1) {
         citiesLocal.cities.push(city);
       }
 
@@ -56,6 +59,7 @@ $("#search").on("click", function () {
 function updateListOfCitiesUi() {
   var citiesLocal = JSON.parse(localStorage.getItem("citiesserched"));
   if (citiesLocal) {
+    $("#listOfCitiesSearched").empty();
     var citiesProp = citiesLocal.cities;
     for (var i = 0; i < citiesProp.length; i++) {
       var pEl = $("<p class='cities border mt-0 mb-0 p-2'>").text(
@@ -67,8 +71,14 @@ function updateListOfCitiesUi() {
 }
 
 function updateWeatherUi(wInput, inputValue) {
+  $("#0").empty();
+  $("#1").empty();
+  $("#2").empty();
+  $("#3").empty();
+  $("#4").empty();
+  $("#5").empty();
   var h5El = $("<h5>");
-  h5El.text(inputValue + " (" + moment().format("l") + ")");
+  h5El.text(inputValue.toUpperCase() + " (" + moment().format("l") + ")");
   var iconurl =
     "http://openweathermap.org/img/w/" +
     wInput.current.weather[0].icon +
@@ -116,13 +126,24 @@ function updateWeatherUi(wInput, inputValue) {
 $("#listOfCitiesSearched").on("click", $(".cities"), function () {
   var inputValue = $(this).text();
   var queryUrl =
-    "http://api.openweathermap.org/data/2.5/forecast?q=" +
-    inputValue +
-    "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
+    "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
   $.ajax({
     url: queryUrl,
     method: "GET",
   }).then(function (response) {
-    updateWeatherUi(response);
+    updateWeatherUi(response, inputValue);
   });
 });
+function initWeather() {
+  var queryUrl =
+    "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
+  $.ajax({
+    url: queryUrl,
+    method: "GET",
+  }).then(function (response) {
+    console.log(response);
+    var citiesLocal = JSON.parse(localStorage.getItem("citiesserched"));
+    var cityName = citiesLocal.cities[citiesLocal.cities.length - 1];
+    updateWeatherUi(response, cityName);
+  });
+}
