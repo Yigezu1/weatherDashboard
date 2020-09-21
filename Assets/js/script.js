@@ -98,7 +98,7 @@ function updateWeatherUi(wInput, inputValue) {
   $("#0").append(pEl);
   pEl = $("<p>");
   pEl.text("UV Index: ");
-  spanEl = $("<span class='bg-danger'>");
+  spanEl = $("<span class='bg-danger text-white p-1'>");
   spanEl.text(wInput.current.uvi);
   pEl.append(spanEl);
   $("#0").append(pEl);
