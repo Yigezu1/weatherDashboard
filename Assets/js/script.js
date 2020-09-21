@@ -15,10 +15,10 @@ function getSetCityFromLocalStorage(city) {
     }
   } else {
     if (city) {
-      if (!citiesLocal.cities.indexOf(city)) {
+      if ((citiesLocal.cities.indexOf(city))===-1) {
         citiesLocal.cities.push(city);
       }
-      var b = citiesLocal.cities;
+
       localStorage.setItem("citiesserched", JSON.stringify(citiesLocal));
     }
 
@@ -31,20 +31,19 @@ $("#search").on("click", function () {
   var lat, lon;
   if (inputValue) {
     var queryUrl =
-      "http://api.openweathermap.org/data/2.5/forecast?q=" +
-      inputValue +
-      "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
+      "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
+    // "http://api.openweathermap.org/data/2.5/forecast?q=" +
+    // inputValue +
+    // "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
     $.ajax({
       url: queryUrl,
       method: "GET",
     }).then(function (response) {
       console.log(response);
-      lat = response.city.coord.lat;
-      lon = response.city.coord.lon;
       getSetCityFromLocalStorage(inputValue);
-      updateWeatherUi(response);
+      updateWeatherUi(response, inputValue);
     });
-    //   var queryUrl2 = "http://api.openweathermap.org/data/2.5/onecall?lat="+ lat + "&lon="+lon+"exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b"
+    //   var queryUrl2 = "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b"
     //     $.ajax({
 
     //     }).then(function(response2){
@@ -59,14 +58,58 @@ function updateListOfCitiesUi() {
   if (citiesLocal) {
     var citiesProp = citiesLocal.cities;
     for (var i = 0; i < citiesProp.length; i++) {
-      var pEl = $("<p class='cities border mt-0 mb-0 p-2'>").text(citiesProp[i]);
+      var pEl = $("<p class='cities border mt-0 mb-0 p-2'>").text(
+        citiesProp[i]
+      );
       $("#listOfCitiesSearched").append(pEl);
     }
   }
 }
 
-function updateWeatherUi(wInput) {
-  console.log(wInput);
+function updateWeatherUi(wInput, inputValue) {
+  var h5El = $("<h5>");
+  h5El.text(inputValue + " (" + moment().format("l") + ")");
+  var iconurl =
+    "http://openweathermap.org/img/w/" +
+    wInput.current.weather[0].icon +
+    ".png";
+  var imgEl = $("<img>");
+  imgEl.attr("src", iconurl);
+  h5El.append(imgEl);
+  $("#0").append(h5El);
+  var pEl = $("<p>");
+  pEl.text("Temperature: " + wInput.current.temp + "K");
+  $("#0").append(pEl);
+  var pEl = $("<p>");
+  pEl.text("Humidity: " + wInput.current.humidity + "%");
+  $("#0").append(pEl);
+  pEl = $("<p>");
+  pEl.text("Wind Speed: " + wInput.current.wind_speed + " MPH");
+  $("#0").append(pEl);
+  pEl = $("<p>");
+  pEl.text("UV Index: ");
+  spanEl = $("<span class='bg-danger'>");
+  spanEl.text(wInput.current.uvi);
+  pEl.append(spanEl);
+  $("#0").append(pEl);
+  for (var i = 1; i < 6; i++) {
+    var pEl = $("<p>");
+    var day = moment().add(i, "days").calendar("l");
+    pEl.text(day);
+    var divId = "#" + i;
+    $(divId).append(pEl);
+    var iconurl =
+      "http://openweathermap.org/img/w/" +
+      wInput.daily[i].weather[0].icon +
+      ".png";
+    var imgEl = $("<img>");
+    imgEl.attr("src", iconurl);
+    var pEl2 = $("<p>");
+    pEl2.text("Temp: " + wInput.daily[i].temp.day);
+    var pEl3 = $("<p>");
+    pEl3.text("Humidity: " + wInput.daily[i].humidity + "%");
+    $(divId).append(imgEl, pEl2, pEl3);
+  }
 }
 // click event handler that responds on user click on the list of cities. When one of the city
 //  is click the weather information for that city will be displayed.
