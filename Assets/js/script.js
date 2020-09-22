@@ -34,26 +34,30 @@ $("#search").on("click", function () {
   var lat, lon;
   if (inputValue) {
     var queryUrl =
-      "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
-    // "http://api.openweathermap.org/data/2.5/forecast?q=" +
-    // inputValue +
-    // "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
+      "http://api.openweathermap.org/data/2.5/forecast?q=" +
+      inputValue +
+      "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
     $.ajax({
       url: queryUrl,
       method: "GET",
     }).then(function (response) {
-      console.log(response);
-      getSetCityFromLocalStorage(inputValue);
-      updateWeatherUi(response, inputValue);
+      lat = response.city.coord.lat;
+      lon = response.city.coord.lon;
+      var queryUrl2 =
+        "http://api.openweathermap.org/data/2.5/onecall?lat=" +
+        lat +
+        "&lon=" +
+        lon +
+        "&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
+      $.ajax({
+        url: queryUrl2,
+        method: "GET",
+      }).then(function (response2) {
+        getSetCityFromLocalStorage(inputValue);
+        updateWeatherUi(response2, inputValue);
+      });
     });
-    //   var queryUrl2 = "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b"
-    //     $.ajax({
-
-    //     }).then(function(response2){
-    //         console.log(response2);
-    //     });
   }
-  //   getCityFromLocalStorage(city);
 });
 
 function updateListOfCitiesUi() {
@@ -121,29 +125,44 @@ function updateWeatherUi(wInput, inputValue) {
     $(divId).append(imgEl, pEl2, pEl3);
   }
 }
+
 // click event handler that responds on user click on the list of cities. When one of the city
 //  is click the weather information for that city will be displayed.
-$("#listOfCitiesSearched").on("click", $(".cities"), function () {
+$("#listOfCitiesSearched").on("click", ".cities", function () {
   var inputValue = $(this).text();
-  var queryUrl =
-    "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
-  $.ajax({
-    url: queryUrl,
-    method: "GET",
-  }).then(function (response) {
-    updateWeatherUi(response, inputValue);
-  });
+  ajaxCall(inputValue);
 });
 function initWeather() {
-  var queryUrl =
-    "http://api.openweathermap.org/data/2.5/onecall?lat=9.025&lon=38.7469&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
-  $.ajax({
-    url: queryUrl,
-    method: "GET",
-  }).then(function (response) {
-    console.log(response);
-    var citiesLocal = JSON.parse(localStorage.getItem("citiesserched"));
-    var cityName = citiesLocal.cities[citiesLocal.cities.length - 1];
-    updateWeatherUi(response, cityName);
-  });
+  var citiesLocal = JSON.parse(localStorage.getItem("citiesserched"));
+  var cityName = citiesLocal.cities[citiesLocal.cities.length - 1];
+  ajaxCall(cityName);
+}
+
+function ajaxCall(cityInput) {
+  var lat, lon;
+  if (cityInput) {
+    var queryUrl =
+      "http://api.openweathermap.org/data/2.5/forecast?q=" +
+      cityInput +
+      "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
+    $.ajax({
+      url: queryUrl,
+      method: "GET",
+    }).then(function (response) {
+      lat = response.city.coord.lat;
+      lon = response.city.coord.lon;
+      var queryUrl2 =
+        "http://api.openweathermap.org/data/2.5/onecall?lat=" +
+        lat +
+        "&lon=" +
+        lon +
+        "&exclude=hourly,minutely&appid=7118d3eda51d9d8e760f326175a3947b";
+      $.ajax({
+        url: queryUrl2,
+        method: "GET",
+      }).then(function (response2) {
+        updateWeatherUi(response2, cityInput);
+      });
+    });
+  }
 }
