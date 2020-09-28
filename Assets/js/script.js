@@ -35,7 +35,7 @@ $("#search").on("click", function () {
   var lat, lon;
   if (inputValue) {
     var queryUrl =
-      "http://api.openweathermap.org/data/2.5/forecast?q=" +
+      "https://api.openweathermap.org/data/2.5/forecast?q=" +
       inputValue +
       "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
     $.ajax({
@@ -45,7 +45,7 @@ $("#search").on("click", function () {
       lat = response.city.coord.lat;
       lon = response.city.coord.lon;
       var queryUrl2 =
-        "http://api.openweathermap.org/data/2.5/onecall?lat=" +
+        "https://api.openweathermap.org/data/2.5/onecall?lat=" +
         lat +
         "&lon=" +
         lon +
@@ -123,7 +123,7 @@ function updateWeatherUi(wInput, inputValue) {
     var divId = "#" + i;
     $(divId).append(pEl);
     var iconurl =
-      "http://openweathermap.org/img/w/" +
+      "https://openweathermap.org/img/w/" +
       wInput.daily[i].weather[0].icon +
       ".png";
     var imgEl = $("<img>");
@@ -152,7 +152,7 @@ function ajaxCall(cityInput) {
   var lat, lon;
   if (cityInput) {
     var queryUrl =
-      "http://api.openweathermap.org/data/2.5/forecast?q=" +
+      "https://api.openweathermap.org/data/2.5/forecast?q=" +
       cityInput +
       "&cnt=1&appid=7118d3eda51d9d8e760f326175a3947b";
     $.ajax({
@@ -162,7 +162,7 @@ function ajaxCall(cityInput) {
       lat = response.city.coord.lat;
       lon = response.city.coord.lon;
       var queryUrl2 =
-        "http://api.openweathermap.org/data/2.5/onecall?lat=" +
+        "https://api.openweathermap.org/data/2.5/onecall?lat=" +
         lat +
         "&lon=" +
         lon +
