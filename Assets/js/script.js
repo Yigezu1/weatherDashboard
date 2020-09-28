@@ -87,7 +87,7 @@ function updateWeatherUi(wInput, inputValue) {
   var h5El = $("<h5>");
   h5El.text(inputValue.toUpperCase() + " (" + moment().format("l") + ")");
   var iconurl =
-    "http://openweathermap.org/img/w/" +
+    "https://openweathermap.org/img/w/" +
     wInput.current.weather[0].icon +
     ".png";
   var imgEl = $("<img>");
